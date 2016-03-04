@@ -8,7 +8,7 @@
 
 //============================================================================
 // Name        : B3-lab2.cpp
-// Author      :
+// Author      : Varsha Jain
 // Version     :
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
@@ -56,13 +56,15 @@ public :
 		stringstream out;
 		out<<sem;
 		sem1=out.str();
+		temp.erase();
+		buffer.erase();
 		temp=USN+'|'+name+'|'+branch+'|'+sem1;
 		for(i=temp.size();i<max;i++)
 		{
 			temp+='$';
 		}
 		cout<<temp;
-		buffer=temp;
+		buffer+=temp;
 	}
 	void write()
 	{
@@ -97,6 +99,7 @@ public :
 	void unpack()
 	{
 		int i=0;
+		string sem1;
 		USN.erase();
 		while(buffer[i]!='|')
 			USN+=buffer[i++];
@@ -109,22 +112,20 @@ public :
 		while(buffer[i]!='|')
 			branch+=buffer[i++];
 		i++;
-		string sem1;
-		stringstream out;
-		out<<sem;
-		sem1=out.str();
-		sem1.erase();
-		while(buffer[i]!='|')
-			sem1+=buffer[i++];
-		i++;
 
+		sem1.erase();
+		while(buffer[i]!='$')
+			sem1+=buffer[i++];
+
+		stringstream convert(sem1);
+		convert>>sem;
 	}
 
 	void modify(string key)
 	{
-		int choice;
-		search(key);
-		del(key);
+		int choice,pos;
+		fstream fp1;
+		pos=search(key);
 		cout<<"Enter choice : \n1.USN\n2.name\n3.Branch\n4.Sem\n";
 		cin>>choice;
 		switch(choice)
@@ -147,18 +148,10 @@ public :
 						break;
 			}
 		pack();
-		write();
-	}
-	int del(string key)
-	{
-		fstream fp1;
-		int pos=search(key);
-		pos=pos-100;
-		fp1.open("data1.txt",ios::out|ios::app);
-		seek("data1.txt",pos);
-		fp2.put('*');
-		fp1.close();
-		return pos;
+		pos=pos-101;
+		fp1.open("data1.txt");
+		fp1.seekp(pos,ios::beg);
+		fp1<<buffer;
 
 	}
 };
@@ -170,7 +163,7 @@ int main()
 	string key;
 	while(1)
 	{
-	cout<<"Enter choice : \n1.Insert\n2.Search\n3.Delete\n4.Modify\n";
+	cout<<"Enter choice : \n1.Insert\n2.Search\n3.Modify\n";
 	cin>>choice;
 	switch(choice)
 		{
@@ -181,9 +174,9 @@ int main()
 					cin>>key;
 				    i=S.search(key);
 				    if(i!=0)
-				    	cout<<"Found at "<<i-100<<endl;
+				    	cout<<"Found at "<<i-101;
 				    else
-				    	cout<<"Not found\n";
+				    	cout<<"Not found";
 				    break;
 			case 3: cout<<"Enter key : ";
 					cin>>key;
