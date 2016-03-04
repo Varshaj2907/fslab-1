@@ -100,6 +100,7 @@ public :
 	{
 		int i=0;
 		string sem1;
+		stringstream convert(sem1);
 		USN.erase();
 		while(buffer[i]!='|')
 			USN+=buffer[i++];
@@ -116,8 +117,6 @@ public :
 		sem1.erase();
 		while(buffer[i]!='$')
 			sem1+=buffer[i++];
-
-		stringstream convert(sem1);
 		convert>>sem;
 	}
 
